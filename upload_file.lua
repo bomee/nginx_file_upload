@@ -68,7 +68,7 @@ end
 local t = tonumber(ngx.var.arg_t)
 local key = ngx.var.arg_key
 -- 这里没有引用身份验证，则用简单的字符串做验证
-if t == nil or "QSCGYJMLPOIKMHT432EFVQJZVCSFA097TY"~=key or (os.time() - t / 1000) > 300  then
+if t == nil or "xxxxx"~=key or (os.time() - t / 1000) > 300  then
     ngx.status = 403
     res_error("invalid")
     ngx.exit(403)
