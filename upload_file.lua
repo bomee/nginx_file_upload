@@ -57,6 +57,7 @@ end
 local osfilepath = "/data/nginx/static"
 local i=0
 local params = {}
+local resize = {}
 local param_name
 ngx.header.content_type = "text/plain"
 
@@ -111,11 +112,22 @@ while true do
             file:write(res)
         elseif param_name then
             params[param_name] = res
+            if param_name == "resize" or param_name == "crop" then
+                resize[param_name] = res
+            end
         end
     elseif typ == "part_end" then
     if file then
         file:close()
         file = nil
+        for h,v in pairs(resize) do
+            if h == "resize" then
+                os.execute("gm convert -resize " .. v .. " " .. filepath .. " " .. filepath .. "_" .. v .. get_file_ext(filename))
+            end
+            if h == "crop" then
+                os.execute("gm convert -resize " .. v .. "^ -gravity center -extent " .. v .. " "  .. filepath .. " " .. filepath .. "_" .. v .. get_file_ext(filename))
+            end
+        end
         res_success()
     end
     elseif typ == "eof" then
